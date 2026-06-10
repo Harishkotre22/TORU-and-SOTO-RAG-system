@@ -1,0 +1,29 @@
+Commissioning robot TORU integrates easily and without major adjustments into an existing warehouse and processes. Once configured, it works autonomously alongside its human colleagues. The connection to a warehouse management system is uncomplicated via WLAN.
+
+Shoe boxes are its specialty: the intelligent picking robot TORU picks individual boxes — even from stacks — and takes them directly to the transfer station. Of course, it also brings them back again for storage or returns. Up to 20 hours a day. This allows him to be active outside regular work shifts and, for example, smooth out peaks through preparatory work. After an update, TORU also picks up special small load carriers (KLTs) as an integral part of the NEOintralogistics logistics system in its proven reliable manner.
+
+Picking with TORU not only adapts to your warehouse environment, but also to your needs: New robots can be integrated directly, as they inherit their knowledge from the TORU(s) already implemented. Your robot fleet grows with your success.
+
+## Picking robot TORU in action
+
+The mobile picking robot TORU is ideal for sorting orders into dedicated compartments and picking up boxes for the storage process. It picks individual shoeboxes or special NEO-KLTs and transports them to a transfer point. Here, TORU can consolidate different items in a single order so that the packaging process can be initiated directly.
+
+### Flexibility for your processes: Transfer stations at a glance
+
+TORU integrates perfectly into your current processes. No matter which transfer stations you use in your warehouse or picking process. TORU reliably handles the greatest possible variance within an operating range of 8 cm to 250 cm above the floor:
+
+##### Conveyor belt
+
+Picked cartons can be placed directly on conveyor sticks to be fed to a sorter, for example, or to the automatic packing line.
+
+##### Flow rack
+
+TORU places cartons directly into flow racks and picks from them. The handling is suitable for downstream tote processes as well as single & multi orders.
+
+##### Order picking trolley
+
+Shoe boxes can be picked up from or delivered to picking trolleys. Ideal for sorting orders and other inbound & outbound processes.
+
+##### Putwall
+
+Picking via the putwall synchronises pick-by-light compartment displays and thus offers maximum flexibility in sorting orders and subsequent processes.

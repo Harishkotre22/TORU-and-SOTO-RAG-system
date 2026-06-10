@@ -1,0 +1,43 @@
+Logistics robot SOTO can be flexibly integrated into your production environment: it can pick at different heights, handle small load carriers (totes / KLTs) of different sizes and interact with passive flow racks. SOTO is able to transport up to 24 KLTs in one go and ultimately replaces your tugger train process completely. With just a few clicks, you can adapt your tote delivery processes yourself and always keep an eye on the entire material flow. As you grow, you can simply and easily integrate additional SOTOs into your logistics chain.
+
+Take repetitive and physically demanding transportation tasks off your employees’ hands. KLT robot SOTO transports full and empty containers precisely to the right place 24/7 — autonomously and safely thanks to sophisticated sensor and camera technology. This allows you to shift repetitive, physically demanding transportation tasks to the robot and free up human resources for value-adding tasks. Automated processes also help you to reduce incorrect deliveries and make your processes more robust.
+
+SOTO is connected to your WMS system and uses its own intelligence to plan the most efficient route for its transport orders, ensuring fast processes for your material flow. In addition, SOTO reacts independently to changes in its environment, avoids obstacles and proactively rectifies disruptions.
+
+SOTO puts safety first. The logistics robot is equipped with several laser scanners for safe navigation, even in narrow environments. It uses two 3D cameras to reliably detect obstacles such as machines and people. It always adapts its speed to its surroundings so that it can always avoid obstacles or stop in time. Light curtains also prevent people from interfering with the running system.
+
+## Automate your material flow and close the gap between warehouse and production line
+
+### Flexibility
+
+The autonomous logistics robot SOTO closes the gap between warehouse and production. It transports up to 24 totes of different sizes simultaneously and interacts with a wide variety of transfer stations at different heights. It can approach sources and sinks from three sides and rotate KLTs as required after picking them up. This allows you to keep the material flow running at all times, supply all stations just in time and relieve your employees of these 'unproductive' tasks.
+
+### Process Stability
+
+By automating your KLT transports, you can now ensure smooth, precise and safe processing of your transport orders - without having to struggle with the challenges of vacation periods, sickness waves or shift work. We base our SOTO on the highest industry standards so that you can optimize your transport processes and raise them to a new level of reliability.
+
+### Efficiency
+
+Reduce your ongoing intralogistics costs by an average of 60% through intelligent automation of transport processes. SOTO handles totes for you safely and reliably around the clock - regardless of whether you are loading all stations for the day shift during the night shift or whether you want to cushion production peaks.
+
+## Autonomous logistics robot SOTO in action
+
+### Dynamic supply and disposal of small load carriers
+
+The logistics robot SOTO has already successfully taken over the supply of materials via KLTs in a wide range of industries and for both large and medium-sized companies. With its high level of intelligence, SOTO is able to perform complex transportation tasks independently and react smoothly to changes in the environment. It can therefore completely replace manual intralogistics processes for you.
+
+### Maximum flexibility at handover stations
+
+SOTO uses a conveyor gripper to manipulate KLTs at variable heights between 0.40 — 1.70 m. This ensures the robot can interact with a wide range of handover stations, such as the following:
+
+##### Flow racks
+
+SOTO picks-up and places KLTs into the compartments of flow racks. All common rack types can be adapted with little effort so that SOTO can interact with them.
+
+##### Conveyor belts
+
+The mobile robot can be easily configured via the fleet manager to interact with stationary conveyors connected to an AS/RS or a machine.
+
+##### Tugger trains
+
+SOTO transfers or removes KLTs at the exact position on a tugger train if this is of advantage for your processes.
