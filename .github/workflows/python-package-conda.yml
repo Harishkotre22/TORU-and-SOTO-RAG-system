@@ -1,0 +1,59 @@
+name: Python Package using Conda
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+          activate-environment: base
+
+      - name: Cache HuggingFace models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: ${{ runner.os }}-hf-${{ hashFiles('requirements.txt', 'environment.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-hf-
+
+      - name: Install dependencies
+        shell: bash -l {0}
+        run: |
+          conda env update --file environment.yml --name base
+
+      - name: Install flake8
+        shell: bash -l {0}
+        run: |
+          conda install -y flake8
+
+      - name: Lint with flake8
+        shell: bash -l {0}
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Install pytest
+        shell: bash -l {0}
+        run: |
+          conda install -y pytest
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: |
+          pytest
