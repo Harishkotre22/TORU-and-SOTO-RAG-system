@@ -35,3 +35,5 @@ This repository is a starter structure for building a Retrieval-Augmented Genera
 - `data/raw/` — raw scraped content
 - `data/cleaned/` — cleaned text chunks
 - `data/embeddings/` — saved embedding index or vector store
+
+Magazino Gmbh
