@@ -5,7 +5,7 @@ from .generator import RAGGenerator
 generator = RAGGenerator()
 
 
-def answer_question(question: str, top_k: int = 5) -> str:
+def answer_question(question: str, top_k: int = 3) -> str:
 
     hits = retrieve(question, top_k=top_k)
 
@@ -15,7 +15,7 @@ def answer_question(question: str, top_k: int = 5) -> str:
     # =========================
     # STEP 1: PRINT TOP CHUNKS
     # =========================
-    print("\n===== TOP 5 CHUNKS =====\n")
+    print("\n===== TOP 3 CHUNKS =====\n")
 
     for i, hit in enumerate(hits, 1):
         print(f"[Chunk {i}]")

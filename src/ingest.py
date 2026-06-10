@@ -1,113 +1,157 @@
 import json
 import sqlite3
-import re
 from pathlib import Path
 from typing import Dict, List
 from sentence_transformers import SentenceTransformer
+
 from .config import DATA_CLEANED, DATA_EMBEDDINGS, EMBEDDING_DB_PATH
 
 
-def extract_heading_level(line: str) -> int:
-    """
-    Returns heading level:
-    # = 1
-    ## = 2
-    ### = 3
-    #### = 4
-    etc.
-    """
-    match = re.match(r"^(#+)\s+", line)
-    if match:
-        return len(match.group(1))
-    return 0
+# -----------------------------
+# TITLE DETECTION
+# -----------------------------
+def looks_like_title(line: str) -> bool:
+    line = line.strip()
+
+    if not line:
+        return False
+
+    # too long → paragraph
+    if len(line.split()) > 12:
+        return False
+
+    # sentences usually end with punctuation
+    if line.endswith((".", "?", "!")):
+        return False
+
+    # must contain at least one letter (avoid symbols / noise)
+    if not any(c.isalpha() for c in line):
+        return False
+
+    return True
 
 
-def extract_heading_text(line: str) -> str:
-    """Removes markdown hashes and returns clean heading text."""
-    return re.sub(r"^#+\s+", "", line).strip()
+# -----------------------------
+# TOKEN HELPERS
+# -----------------------------
+def word_count(text: str) -> int:
+    return len(text.split())
 
 
-def chunk_text_by_headers(text: str) -> List[Dict]:
-    """
-    Semantic hierarchical chunking with metadata.
+def split_words(text: str) -> List[str]:
+    return text.split()
 
-    Each chunk now contains:
-    - section hierarchy
-    - clean text
-    - level awareness
-    """
 
+def join_words(words: List[str]) -> str:
+    return " ".join(words)
+
+
+# -----------------------------
+# OVERLAP SPLITTING
+# -----------------------------
+def split_with_overlap(text: str, max_words: int = 200, overlap: int = 50) -> List[str]:
+    words = split_words(text)
+
+    if len(words) <= max_words:
+        return [text]
+
+    chunks = []
+    start = 0
+
+    while start < len(words):
+        end = start + max_words
+        chunk = words[start:end]
+        chunks.append(join_words(chunk))
+
+        if end >= len(words):
+            break
+
+        start = end - overlap
+
+    return chunks
+
+
+# -----------------------------
+# MAIN CHUNKER
+# -----------------------------
+MIN_SECTION_WORDS = 20
+MAX_SECTION_WORDS = 250
+
+
+def chunk_text(text: str) -> List[Dict]:
     lines = text.splitlines()
 
     chunks = []
-    current_chunk = []
+    current = []
 
-    #  NEW: metadata tracking
     current_section = None
-    current_subsection = None
-    current_subsubsection = None
 
     def flush():
-        """Save current chunk with metadata"""
-        if not current_chunk:
+        nonlocal current, current_section
+
+        if not current:
             return
 
-        chunks.append({
-            "text": "\n".join(current_chunk).strip(),
-            "section": current_section,
-            "subsection": current_subsection,
-            "subsubsection": current_subsubsection
-        })
+        block = "\n".join(current).strip()
+
+        if not block:
+            current = []
+            return
+
+        # split oversized blocks
+        if word_count(block) > MAX_SECTION_WORDS:
+            parts = split_with_overlap(block)
+
+            for p in parts:
+                chunks.append({
+                    "text": p,
+                    "section": current_section
+                })
+        else:
+            chunks.append({
+                "text": block,
+                "section": current_section
+            })
+
+        current = []
 
     for line in lines:
+        line_stripped = line.strip()
 
-        level = extract_heading_level(line)
-
-        #  IMPROVED: split on ALL heading levels (# → ######)
-        if level > 0:
-
+        if looks_like_title(line_stripped):
+            # close previous block
             flush()
-            current_chunk = []
 
-            heading_text = extract_heading_text(line)
+            # update section context
+            current_section = line_stripped
 
-            # update hierarchy
-            if level == 1:
-                current_section = heading_text
-                current_subsection = None
-                current_subsubsection = None
-
-            elif level == 2:
-                current_subsection = heading_text
-                current_subsubsection = None
-
-            elif level >= 3:
-                current_subsubsection = heading_text
-
-            current_chunk.append(line)
+            # start new block with title
+            current = [line_stripped]
             continue
 
-        # normal text
-        if line.strip():
-            current_chunk.append(line)
-
-        elif current_chunk and current_chunk[-1] != "":
-            current_chunk.append("")
+        if line_stripped:
+            current.append(line_stripped)
+        else:
+            if current and current[-1] != "":
+                current.append("")
 
     flush()
 
-    # filter tiny chunks
+    # filter noise
     return [
         c for c in chunks
-        if len(c["text"].replace("\n", "").strip()) > 10
+        if word_count(c["text"]) >= 3
     ]
 
 
+# -----------------------------
+# BUILD INDEX
+# -----------------------------
 def build_index() -> Dict:
     DATA_EMBEDDINGS.mkdir(parents=True, exist_ok=True)
 
     print("Loading SentenceTransformer model 'all-MiniLM-L6-v2'...")
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    model = SentenceTransformer("all-MiniLM-L6-v2")
 
     documents = []
 
@@ -115,103 +159,96 @@ def build_index() -> Dict:
         text = file_path.read_text(encoding="utf-8")
         source = file_path.name
 
-        chunk_objects = chunk_text_by_headers(text)
+        chunk_objects = chunk_text(text)
 
-        for index, chunk in enumerate(chunk_objects):
+        print(f"{source}: {len(chunk_objects)} chunks")
 
+        for i, chunk in enumerate(chunk_objects):
             documents.append({
-                "id": f"{file_path.stem}-{index}",
+                "id": f"{file_path.stem}-{i}",
                 "source": source,
                 "text": chunk["text"],
-
-                # 🔴 NEW: metadata added
-                "section": chunk["section"],
-                "subsection": chunk["subsection"],
-                "subsubsection": chunk["subsubsection"]
+                "section": chunk.get("section")
             })
 
     if not documents:
-        raise ValueError("No cleaned documents found in data/cleaned/ to build the index.")
+        raise ValueError("No cleaned documents found in data/cleaned/")
 
     print(f"Generating embeddings for {len(documents)} chunks...")
 
-    texts_to_encode = [doc["text"] for doc in documents]
-    embeddings = model.encode(texts_to_encode, show_progress_bar=True)
+    embeddings = model.encode(
+        [d["text"] for d in documents],
+        show_progress_bar=True
+    )
 
-    for doc, embedding in zip(documents, embeddings):
-        doc["vector"] = embedding.tolist()
+    for doc, emb in zip(documents, embeddings):
+        doc["vector"] = emb.tolist()
 
-    connection = sqlite3.connect(str(EMBEDDING_DB_PATH))
+    conn = sqlite3.connect(str(EMBEDDING_DB_PATH))
 
     try:
-        connection.execute("""
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS documents (
                 id TEXT PRIMARY KEY,
                 source TEXT,
                 text TEXT,
                 section TEXT,
-                subsection TEXT,
-                subsubsection TEXT,
                 vector TEXT
             )
         """)
 
-        connection.execute("DELETE FROM documents")
+        conn.execute("DELETE FROM documents")
 
         for doc in documents:
-            connection.execute(
+            conn.execute(
                 """
                 INSERT INTO documents (
-                    id, source, text,
-                    section, subsection, subsubsection,
-                    vector
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    id, source, text, section, vector
+                ) VALUES (?, ?, ?, ?, ?)
                 """,
                 (
                     doc["id"],
                     doc["source"],
                     doc["text"],
                     doc["section"],
-                    doc["subsection"],
-                    doc["subsubsection"],
                     json.dumps(doc["vector"])
                 )
             )
 
-        connection.commit()
+        conn.commit()
 
     finally:
-        connection.close()
+        conn.close()
 
     return {"documents_count": len(documents)}
 
 
+# -----------------------------
+# LOAD INDEX
+# -----------------------------
 def load_index() -> Dict:
     if not EMBEDDING_DB_PATH.exists():
         raise FileNotFoundError("Embedding database not found. Run ingest first.")
 
-    connection = sqlite3.connect(str(EMBEDDING_DB_PATH))
-    connection.row_factory = sqlite3.Row
+    conn = sqlite3.connect(str(EMBEDDING_DB_PATH))
+    conn.row_factory = sqlite3.Row
 
     try:
-        rows = connection.execute(
-            "SELECT id, source, text, section, subsection, subsubsection, vector FROM documents"
+        rows = conn.execute(
+            "SELECT id, source, text, section, vector FROM documents"
         ).fetchall()
-
     finally:
-        connection.close()
+        conn.close()
 
-    documents = []
-
-    for row in rows:
-        documents.append({
-            "id": row["id"],
-            "source": row["source"],
-            "text": row["text"],
-            "section": row["section"],
-            "subsection": row["subsection"],
-            "subsubsection": row["subsubsection"],
-            "vector": json.loads(row["vector"])
-        })
+    documents = [
+        {
+            "id": r["id"],
+            "source": r["source"],
+            "text": r["text"],
+            "section": r["section"],
+            "vector": json.loads(r["vector"])
+        }
+        for r in rows
+    ]
 
     return {"documents": documents}

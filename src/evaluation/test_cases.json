@@ -1,0 +1,52 @@
+[
+  {
+    "domain": "SOTO",
+    "question": "What is SOTO used for in production environments?",
+    "expected": "SOTO is an autonomous logistics robot used for transporting small load carriers (KLTs) in production environments and automating material flow between warehouse and production lines."
+  },
+  {
+    "domain": "SOTO",
+    "question": "How many KLTs can SOTO transport at once?",
+    "expected": "SOTO can transport up to 24 KLTs in one go."
+  },
+  {
+    "domain": "SOTO",
+    "question": "How does SOTO navigate safely in its environment?",
+    "expected": "SOTO uses laser scanners, 3D cameras, and sensor technology to detect obstacles and navigate safely while adapting its speed to the environment."
+  },
+  {
+    "domain": "SOTO",
+    "question": "What tasks does SOTO automate in logistics?",
+    "expected": "SOTO automates repetitive transportation tasks, moves containers autonomously, and optimizes material flow in warehouses and production environments."
+  },
+  {
+    "domain": "SOTO",
+    "question": "How does SOTO interact with warehouse systems like WMS?",
+    "expected": "SOTO connects to warehouse management systems (WMS) and uses them to plan efficient routes and manage transport orders."
+  },
+  {
+    "domain": "TORU",
+    "question": "What is TORU designed for in warehouse operations?",
+    "expected": "TORU is a mobile picking robot designed for picking and transporting shoe boxes and small load carriers in warehouse operations."
+  },
+  {
+    "domain": "TORU",
+    "question": "How long can TORU operate in a day?",
+    "expected": "TORU can operate up to 20 hours per day, allowing it to work outside regular shifts and handle peak workloads."
+  },
+  {
+    "domain": "TORU",
+    "question": "What items can TORU pick and transport?",
+    "expected": "TORU can pick individual shoe boxes and special small load carriers (KLTs), even from stacks, and transport them to transfer stations."
+  },
+  {
+    "domain": "TORU",
+    "question": "How does TORU integrate into warehouse systems?",
+    "expected": "TORU integrates into warehouse systems via WLAN and connects easily to warehouse management systems to operate autonomously."
+  },
+  {
+    "domain": "TORU",
+    "question": "What transfer stations can TORU work with?",
+    "expected": "TORU can work with conveyor belts, flow racks, order picking trolleys, and putwalls."
+  }
+]

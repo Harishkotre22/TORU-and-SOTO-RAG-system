@@ -1,4 +1,18 @@
-Logistics robot SOTO can be flexibly integrated into your production environment: it can pick at different heights, handle small load carriers (totes / KLTs) of different sizes and interact with passive flow racks. SOTO is able to transport up to 24 KLTs in one go and ultimately replaces your tugger train process completely. With just a few clicks, you can adapt your tote delivery processes yourself and always keep an eye on the entire material flow. As you grow, you can simply and easily integrate additional SOTOs into your logistics chain.
+Autonomous Logistics Robot SOTO for Your Production
+
+Automate your material flow and intralogistics processes and close the gap between warehouse and production
+
+Advantages
+
+Process integration & transfer systems
+
+Technology & Safety
+
+Software & Fleet Manager
+
+Case studies
+
+Logistics robot SOTO can be flexibly integrated into your production environment: it can pick at different heights, handle small load carriers (totes / KLTs) of different sizes and interact with passive flow racks. SOTO is able to transport up to 24 KLTs in one go and ultimately replaces your tugger train process completely. With just a few clicks, you can adapt your tote delivery processes yourself and always keep an eye on the entire material flow. As you grow, you can simply and easily integrate additional SOTOs into your logistics chain.
 
 Take repetitive and physically demanding transportation tasks off your employees’ hands. KLT robot SOTO transports full and empty containers precisely to the right place 24/7 — autonomously and safely thanks to sophisticated sensor and camera technology. This allows you to shift repetitive, physically demanding transportation tasks to the robot and free up human resources for value-adding tasks. Automated processes also help you to reduce incorrect deliveries and make your processes more robust.
 
@@ -6,38 +20,112 @@ SOTO is connected to your WMS system and uses its own intelligence to plan the m
 
 SOTO puts safety first. The logistics robot is equipped with several laser scanners for safe navigation, even in narrow environments. It uses two 3D cameras to reliably detect obstacles such as machines and people. It always adapts its speed to its surroundings so that it can always avoid obstacles or stop in time. Light curtains also prevent people from interfering with the running system.
 
-## Automate your material flow and close the gap between warehouse and production line
+Automate your material flow and close the gap between warehouse and production line
 
-### Flexibility
+Flexibility
 
 The autonomous logistics robot SOTO closes the gap between warehouse and production. It transports up to 24 totes of different sizes simultaneously and interacts with a wide variety of transfer stations at different heights. It can approach sources and sinks from three sides and rotate KLTs as required after picking them up. This allows you to keep the material flow running at all times, supply all stations just in time and relieve your employees of these 'unproductive' tasks.
 
-### Process Stability
+Process Stability
 
 By automating your KLT transports, you can now ensure smooth, precise and safe processing of your transport orders - without having to struggle with the challenges of vacation periods, sickness waves or shift work. We base our SOTO on the highest industry standards so that you can optimize your transport processes and raise them to a new level of reliability.
 
-### Efficiency
+Efficiency
 
 Reduce your ongoing intralogistics costs by an average of 60% through intelligent automation of transport processes. SOTO handles totes for you safely and reliably around the clock - regardless of whether you are loading all stations for the day shift during the night shift or whether you want to cushion production peaks.
 
-## Autonomous logistics robot SOTO in action
+Autonomous logistics robot SOTO in action
 
-### Dynamic supply and disposal of small load carriers
+Dynamic supply and disposal of small load carriers
 
-The logistics robot SOTO has already successfully taken over the supply of materials via KLTs in a wide range of industries and for both large and medium-sized companies. With its high level of intelligence, SOTO is able to perform complex transportation tasks independently and react smoothly to changes in the environment. It can therefore completely replace manual intralogistics processes for you.
+The logistics robot SOTO has already successfully taken over the supply of materials via KLTs in a wide range of industries and for both large and medium-sized companies.With its high level of intelligence, SOTO is able to perform complex transportation tasks independently and react smoothly to changes in the environment.It can therefore completely replace manual intralogistics processes for you.
 
-### Maximum flexibility at handover stations
+Maximum flexibility at handover stations
 
-SOTO uses a conveyor gripper to manipulate KLTs at variable heights between 0.40 — 1.70 m. This ensures the robot can interact with a wide range of handover stations, such as the following:
+SOTO uses a conveyor gripper to manipulate KLTs at variable heights between 0.40 — 1.70 m. This ensures the robot can interact with a wide range of handover stations, such as the following:
 
-##### Flow racks
+Flow racks
 
-SOTO picks-up and places KLTs into the compartments of flow racks. All common rack types can be adapted with little effort so that SOTO can interact with them.
+SOTO picks-up and places KLTs into the compartments of flow racks. All common rack types can be adapted with little effort so that SOTO can interact with them.
 
-##### Conveyor belts
+Conveyor belts
 
 The mobile robot can be easily configured via the fleet manager to interact with stationary conveyors connected to an AS/RS or a machine.
 
-##### Tugger trains
+Tugger trains
 
 SOTO transfers or removes KLTs at the exact position on a tugger train if this is of advantage for your processes.
+
+Technology & Safety
+
+SOTO delivers a consistent and highly adaptable material flow between the warehouse and the production line. Thanks to its powerful Li-ion batteries, it can drive for up to 8 hours without recharging. The batteries can be recharged at any time to maximize efficiency (charging ratio: 1 minute charging = 5 minutes driving).
+
+The mobile KLT robot integrates high-end technology into every component. The sensors and intelligent software enable pinpoint-accurate handling of containers, and safe navigation in mixed environments with human colleagues.
+
+Drive base
+
+Backpack
+
+Gripper
+
+Safety
+
+Display
+
+The omnidirectional power drive enables SOTO to maneuver precisely, even in the narrowest spaces. Aisle widths as narrow as 1.65m are fully navigable; from 2.5m wide aisles, SOTO can achieve its maximum speed of 1.5m/s. The drive base is extremely robust and meets the highest safety demands through its high braking performance.
+
+SOTO is a ‘multi-load robot.’ With its double-deep backpack for storing containers, SOTO can transport between 8 and 24 totes simultaneously. The backpack configuration depends on the range of KLT sizes and your transport requirements. The high transport volume allows you to significantly reduce the volume of traffic in your production.
+
+Individual totes can weigh up to 20kg, with the robot having a total payload capacity of 250kg. The robot can reliably pick and place KLTs ranging in size from 300x200 mm to 600x400mm.
+
+SOTO uses a flexible gripper mechanism to transfer KLTs between heights of 0.4m and 1.7m from the ground. For efficient storage, SOTO can also rotate KLTs by 90° and 180° degrees, for example, to pick them up lengthwise and drop them off widthwise. The gripper can pick up and place containers from three directions: left, right, and front.
+
+Barcode scanners on the gripper ensure that the correct tote is picked up and placed in the right location. This enables material tracking in the fleet manager at all times. Thanks to its sensors, cameras, and intelligent software, SOTO is also capable of reacting to changes in its environment during operation, such as a shifted shelf or incorrectly labeled KLT.
+
+Laser scanners at the front and rear, as well as 3D cameras, ensure safe navigation in dynamic environments. The robot recognizes obstacles while driving, adjusts its speed, and uses the permitted space to navigate around them. Light curtains around the gripper ensure that humans do not come into contact with moving parts. If a light curtain detects an object, the robot immediately stops all movements.
+
+If SOTO encounters a problem that requires human assistance, the touch display shows relevant information to quickly rectify the problem. This means that even colleagues with no prior knowledge of robotics can see where the problem lies and easily fix it.
+
+SOTO Fleet Manager — VDA5050-compliant control software for your SOTO fleet
+
+In contrast to simple robotics solutions on the market, SOTO is an autonomous, perception-controlled robot. The “brain” of SOTO, takes control of the complex navigation, safety and logistics tasks and brings them together in the SOTO Fleet Manager. This intelligent software alsoenables SOTO to solve challenges independently.
+
+You will quickly find your way around the minimalist user interface.Here you can record new production environments and put SOTO into operation, without having to wait for external support.
+
+The SOTO Fleet Manager is connected to your WMS system via an interface. This means that you not only have your SOTO fleet in view at all times, but also every transport order and the entire material flow.
+
+The KLT robot SOTO isVDA5050-compliantand can also be connected to a 3rd party master controller if you are operating a mixed fleet of robots from several vendors. Our team is happy to advise you on your exact requirements.
+
+Mapping & Modeling
+
+Using its sensors, SOTO records its surroundings and creates a map for localization. In the fleet manager, this map is supplemented with all relevant information, including sources, sinks, routes, and traffic rules. You can make adjustments at any time to accommodate changes to your production environment.
+
+Operation & Control
+
+The fleet manager provides a live view of all robots to keep track of their location, transported materials and future tasks. You can view all the relevant KPIs directly on a centralized dashboard.
+
+Order Management & Route Planning
+
+The fleet manager also provides an overview of all active and pending orders. The master controller ensures an optimal distribution across the fleet to guarantee a fast process.
+
+Case Studies — SOTO in use with Customers
+
+Growth through automated processes
+
+VEGA was an early development partner and uses the latest generation of SOTO for supply and disposal at their production line. »learn more
+
+KLT exchange directly at the injection molding machine
+
+WAGO was looking for a way to close the gap between storage and the injection molding machine. SOTO helped them achieve this and more. »mehr erfahren
+
+Automatic connection of warehouse and production line
+
+Bosch operates a hybrid fleet of mobile robots. SOTO automates the transportation of KLTs between the compact warehouse and production lines for modern heating technology. »mehr erfahren
+
+Fully automated small parts logistics
+
+Automation is a strategic focus for MAN in manufacturing. SOTO covers an important part of this. A SOTO fleet automates the entire process of KLT supply. »Learn more
+
+Would you like to find out how SOTO can be a valuable solution in your production? Then don’t hesitate to get in touch.The Jungheinrich sales team will be happy to advise you, or you can contact info@magazino.de.
+
+These customers are already benefiting from the use of our robotic solutions:
