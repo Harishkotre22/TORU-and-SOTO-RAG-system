@@ -7,75 +7,61 @@ from bs4 import BeautifulSoup
 from .config import DATA_CLEANED
 
 
-def extract_main_content(html: str) -> str:
-    """
-    Surgically cleans HTML layout noise without destroying structural technical content,
-    then uses Trafilatura to output clean Markdown.
-    """
-    soup = BeautifulSoup(html, "html.parser")
+import re
+from bs4 import BeautifulSoup
+import trafilatura
 
-    # 1. Eliminate heavy operational and asset code blocks
-    ignored_tags = ["script", "style", "noscript", "svg", "iframe", "form"]
-    for tag in soup(ignored_tags):
-        tag.decompose()
-
-    # 2. Refined noise pattern: Avoid matching terms like "menu" or "sidebar" globally,
-    # because technical specifications often live inside custom tab layouts/menus.
-    noise_patterns = re.compile(
-        r"global-header|site-footer|cookie-notice|social-share|lang-selector|breadcrumbs", 
-        re.IGNORECASE
-    )
+def extract_main_content(html_content):
+    if not html_content:
+        return ""
     
-    for element in soup.find_all(True):
-        # Safety check for zombie elements
-        if element.attrs is None:
-            continue
-
-        # Convert class attribute to string safely
-        class_list = element.get("class", [])
-        class_str = " ".join(class_list) if isinstance(class_list, list) else str(class_list)
-        element_id = element.get("id", "")
-        
-        # Strip structural layout noise, but preserve nested content zones
-        if element.name in ["header", "footer", "nav"] or \
-           noise_patterns.search(class_str) or noise_patterns.search(element_id):
-            element.decompose()
-
-    cleaned_html = str(soup)
-
-    # 3. Extract text with relaxed precision to capture layout grids/specs
+    # 1. Try Trafilatura extraction
     extracted = trafilatura.extract(
-        cleaned_html,
-        include_comments=False,
-        include_tables=True,
-        output_format="markdown",
-        favor_precision=False  # Crucial: stops Trafilatura from eating technical tabs
+        html_content, 
+        include_links=False, 
+        include_images=False, 
+        include_tables=True
     )
-
-    if extracted and len(extracted.strip()) > 300:
-        return extracted
-
-    # 4. Fallback structural parser if Trafilatura misses anything
-    extracted_parts = []
-    important_tags = ["h1", "h2", "h3", "h4", "h5", "h6", "p", "li", "td", "th"]
     
-    for tag in soup.find_all(important_tags):
-        if tag.attrs is None:
-            continue
-            
-        text = tag.get_text(" ", strip=True)
-        if len(text) <= 1:
-            continue
-            
-        if tag.name.startswith("h"):
-            level = tag.name[1]
-            extracted_parts.append(f"\n{'#' * int(level)} {text}\n")
-        elif tag.name == "li":
-            extracted_parts.append(f"* {text}")
-        else:
-            extracted_parts.append(text)
+    # 2. Generate a custom, highly targetable fallback using BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Strip scripts, styles, and templates that cause extraction noise
+    for noise in soup(['script', 'style', 'nav', 'footer', 'header', 'template']):
+        noise.decompose()
+        
+    # Track down specific container classes used by this theme
+    target_classes = ['mag_section', 'text-magbody', 'mag_product_explainer_text', 'entry-content']
+    content_divs = soup.find_all(class_=lambda c: c and any(x in c for x in target_classes))
+    
+    fallback_lines = []
+    if content_divs:
+        for div in content_divs:
+            # Extract text from structural readable tags
+            for element in div.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li']):
+                text = element.get_text(strip=True)
+                if text and text not in fallback_lines:
+                    fallback_lines.append(text)
+        fallback_text = "\n\n".join(fallback_lines)
+    else:
+        # Global fallback if no specialized content classes match
+        fallback_text = soup.get_text(separator="\n\n", strip=True)
+        
+    # 3. Clean hidden soft hyphens (\u00ad) disrupting processing frameworks
+    if extracted:
+        extracted = extracted.replace('\u00ad', '')
+    if fallback_text:
+        fallback_text = fallback_text.replace('\u00ad', '')
 
-    return "\n".join(extracted_parts)
+    # 4. Smart Decision Override Logic
+    if extracted and fallback_text:
+        # If Trafilatura captures significantly less text than the raw container tags,
+        # it means it fell into the heuristic comment pruning trap. Force the fallback text.
+        if len(extracted.strip()) < len(fallback_text.strip()) * 0.75:
+            return fallback_text
+        return extracted
+        
+    return fallback_text if fallback_text else (extracted if extracted else "")
 
 
 def remove_boilerplate_lines(text: str) -> str:

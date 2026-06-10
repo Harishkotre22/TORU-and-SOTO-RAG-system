@@ -1,88 +1,185 @@
 import json
 import sqlite3
+import re
 from pathlib import Path
 from typing import Dict, List
 from sentence_transformers import SentenceTransformer
 from .config import DATA_CLEANED, DATA_EMBEDDINGS, EMBEDDING_DB_PATH
 
-def chunk_text_by_headers(text: str) -> List[str]:
+
+def extract_heading_level(line: str) -> int:
     """
-    Surgically splits text into chunks based on Markdown headings (##, ###).
-    This ensures that headings, subheadings, and their descriptions 
-    stay tightly packaged together for semantic retrieval.
+    Returns heading level:
+    # = 1
+    ## = 2
+    ### = 3
+    #### = 4
+    etc.
     """
+    match = re.match(r"^(#+)\s+", line)
+    if match:
+        return len(match.group(1))
+    return 0
+
+
+def extract_heading_text(line: str) -> str:
+    """Removes markdown hashes and returns clean heading text."""
+    return re.sub(r"^#+\s+", "", line).strip()
+
+
+def chunk_text_by_headers(text: str) -> List[Dict]:
+    """
+    Semantic hierarchical chunking with metadata.
+
+    Each chunk now contains:
+    - section hierarchy
+    - clean text
+    - level awareness
+    """
+
     lines = text.splitlines()
+
     chunks = []
     current_chunk = []
 
+    #  NEW: metadata tracking
+    current_section = None
+    current_subsection = None
+    current_subsubsection = None
+
+    def flush():
+        """Save current chunk with metadata"""
+        if not current_chunk:
+            return
+
+        chunks.append({
+            "text": "\n".join(current_chunk).strip(),
+            "section": current_section,
+            "subsection": current_subsection,
+            "subsubsection": current_subsubsection
+        })
+
     for line in lines:
-        # If we hit a main header (##) or subheader (###), save the previous block
-        if line.startswith("## ") or line.startswith("### "):
-            if current_chunk:
-                chunks.append("\n".join(current_chunk).strip())
-            current_chunk = [line]  # Start a fresh chunk with the header text
-        else:
-            if line.strip():
-                current_chunk.append(line)
-            elif current_chunk and current_chunk[-1] != "":
-                current_chunk.append("")  # Maintain paragraph spacing inside a section
 
-    # Don't forget to save the very last section
-    if current_chunk:
-        chunks.append("\n".join(current_chunk).strip())
+        level = extract_heading_level(line)
 
-    # Filter out empty or micro-chunks (less than 10 characters long)
-    return [c for c in chunks if len(c.replace("\n", "").strip()) > 10]
+        #  IMPROVED: split on ALL heading levels (# → ######)
+        if level > 0:
+
+            flush()
+            current_chunk = []
+
+            heading_text = extract_heading_text(line)
+
+            # update hierarchy
+            if level == 1:
+                current_section = heading_text
+                current_subsection = None
+                current_subsubsection = None
+
+            elif level == 2:
+                current_subsection = heading_text
+                current_subsubsection = None
+
+            elif level >= 3:
+                current_subsubsection = heading_text
+
+            current_chunk.append(line)
+            continue
+
+        # normal text
+        if line.strip():
+            current_chunk.append(line)
+
+        elif current_chunk and current_chunk[-1] != "":
+            current_chunk.append("")
+
+    flush()
+
+    # filter tiny chunks
+    return [
+        c for c in chunks
+        if len(c["text"].replace("\n", "").strip()) > 10
+    ]
 
 
 def build_index() -> Dict:
     DATA_EMBEDDINGS.mkdir(parents=True, exist_ok=True)
 
-    print(" Loading SentenceTransformer model 'all-MiniLM-L6-v2'...")
+    print("Loading SentenceTransformer model 'all-MiniLM-L6-v2'...")
     model = SentenceTransformer('all-MiniLM-L6-v2')
 
     documents = []
-    # Loop over your pristine cleaned text files
+
     for file_path in sorted(DATA_CLEANED.glob("*.txt")):
         text = file_path.read_text(encoding="utf-8")
         source = file_path.name
-        
-        # Use our new heading splitter logic here
-        chunk_texts = chunk_text_by_headers(text)
-        
-        for index, chunk in enumerate(chunk_texts):
+
+        chunk_objects = chunk_text_by_headers(text)
+
+        for index, chunk in enumerate(chunk_objects):
+
             documents.append({
                 "id": f"{file_path.stem}-{index}",
                 "source": source,
-                "text": chunk,
+                "text": chunk["text"],
+
+                # 🔴 NEW: metadata added
+                "section": chunk["section"],
+                "subsection": chunk["subsection"],
+                "subsubsection": chunk["subsubsection"]
             })
 
     if not documents:
         raise ValueError("No cleaned documents found in data/cleaned/ to build the index.")
 
-    print(f"🧠 Generating semantic vectors for {len(documents)} text chunks...")
-    # Gather just the raw text strings to pass to the AI model
+    print(f"Generating embeddings for {len(documents)} chunks...")
+
     texts_to_encode = [doc["text"] for doc in documents]
     embeddings = model.encode(texts_to_encode, show_progress_bar=True)
 
-    # Convert the resulting machine learning math arrays into normal Python float lists
     for doc, embedding in zip(documents, embeddings):
         doc["vector"] = embedding.tolist()
 
-    # Pack everything away cleanly into SQLite
     connection = sqlite3.connect(str(EMBEDDING_DB_PATH))
+
     try:
-        connection.execute("CREATE TABLE IF NOT EXISTS documents (id TEXT PRIMARY KEY, source TEXT, text TEXT, vector TEXT)")
-        connection.execute("CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)")
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS documents (
+                id TEXT PRIMARY KEY,
+                source TEXT,
+                text TEXT,
+                section TEXT,
+                subsection TEXT,
+                subsubsection TEXT,
+                vector TEXT
+            )
+        """)
+
         connection.execute("DELETE FROM documents")
-        connection.execute("DELETE FROM settings")
 
         for doc in documents:
             connection.execute(
-                "INSERT INTO documents (id, source, text, vector) VALUES (?, ?, ?, ?)",
-                (doc["id"], doc["source"], doc["text"], json.dumps(doc["vector"]))
+                """
+                INSERT INTO documents (
+                    id, source, text,
+                    section, subsection, subsubsection,
+                    vector
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    doc["id"],
+                    doc["source"],
+                    doc["text"],
+                    doc["section"],
+                    doc["subsection"],
+                    doc["subsubsection"],
+                    json.dumps(doc["vector"])
+                )
             )
+
         connection.commit()
+
     finally:
         connection.close()
 
@@ -95,18 +192,26 @@ def load_index() -> Dict:
 
     connection = sqlite3.connect(str(EMBEDDING_DB_PATH))
     connection.row_factory = sqlite3.Row
+
     try:
-        document_rows = connection.execute("SELECT id, source, text, vector FROM documents").fetchall()
+        rows = connection.execute(
+            "SELECT id, source, text, section, subsection, subsubsection, vector FROM documents"
+        ).fetchall()
+
     finally:
         connection.close()
 
     documents = []
-    for row in document_rows:
+
+    for row in rows:
         documents.append({
             "id": row["id"],
             "source": row["source"],
             "text": row["text"],
-            "vector": json.loads(row["vector"]),
+            "section": row["section"],
+            "subsection": row["subsection"],
+            "subsubsection": row["subsubsection"],
+            "vector": json.loads(row["vector"])
         })
 
     return {"documents": documents}
