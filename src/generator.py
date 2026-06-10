@@ -33,10 +33,19 @@ class RAGGenerator:
         prompt = f"""
 You are a strict question answering system.
 
-RULES:
-- Use ONLY the provided context.
-- Do NOT guess or add external knowledge.
-- If answer is missing, say "Not enough information".
+IMPORTANT RULES:
+- Do NOT say "not enough information" if relevant information exists in ANY chunk.
+- Even if the wording is different, match concepts semantically.
+- Prefer the most relevant chunk(s); ignore irrelevant chunks.
+- If multiple chunks contain partial information, combine them.
+- If still nothing is relevant, then say: "Not found in the provided context."
+- Do not hallucinate beyond the context.
+
+ANSWER STYLE:
+- Direct and clear definition if asked "what is..."
+- Use 2–5 sentences maximum
+- Preserve technical terms as they are
+- No repetition of chunks
 
 CONTEXT:
 {context}
