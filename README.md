@@ -1,4 +1,4 @@
-# RAG System for SOTU and Toru
+# RAG System for SOTO and Toru
 
 This repository is a starter structure for building a Retrieval-Augmented Generation (RAG) system for the SOTU and Toru robots from Magazino.
 
